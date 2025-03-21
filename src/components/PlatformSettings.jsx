@@ -17,7 +17,7 @@ function PlatformSettings() {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const response = await axios.get('https://only-backend-je4j.onrender.com/api/admin/platform-settings', {
+                const response = await axios.get('https://backend-pbn5.onrender.com/api/admin/platform-settings', {
                     headers: {
                         Authorization: 'Bearer ' + localStorage.getItem('token') // Assuming the token is stored in localStorage
                     }
@@ -69,7 +69,7 @@ function PlatformSettings() {
         if (bannerImage) formData.append('bannerImage', bannerImage);
 
         try {
-            const response = await axios.put('https://only-backend-je4j.onrender.com/api/admin/platform-settings', formData, {
+            const response = await axios.put('https://backend-pbn5.onrender.com/api/admin/platform-settings', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: 'Bearer ' + localStorage.getItem('token')

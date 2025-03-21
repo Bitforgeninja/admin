@@ -12,7 +12,7 @@ const Games = () => {
   useEffect(() => {
     const fetchMarkets = async () => {
       try {
-        const response = await axios.get('https://only-backend-je4j.onrender.com/api/markets');
+        const response = await axios.get('https://backend-pbn5.onrender.com/api/markets');
         setMarkets(response.data);
         setSelectedMarketId(response.data[0]?.marketId);
         setLoading(false);
@@ -44,7 +44,7 @@ const Games = () => {
       const token = localStorage.getItem('token');
 
       const response = await axios.post(
-        'https://only-backend-je4j.onrender.com/api/admin/markets/declare-results',
+        'https://backend-pbn5.onrender.com/api/admin/markets/declare-results',
         {
           marketId: selectedMarket.marketId,
           openResult: inputOne,

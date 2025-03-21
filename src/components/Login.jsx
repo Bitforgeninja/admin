@@ -12,7 +12,7 @@ function Login() {
     event.preventDefault();
     setLoading(true);  // Set loading to true when login starts
     try {
-      const response = await axios.post('https://only-backend-je4j.onrender.com/api/admin/login', {
+      const response = await axios.post('https://backend-pbn5.onrender.com/api/admin/login', {
         email,
         password
       });

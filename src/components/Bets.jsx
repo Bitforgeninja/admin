@@ -23,7 +23,7 @@ function Bets() {
             }
 
             const response = await axios.get(
-                "https://only-backend-je4j.onrender.com/api/admin/bets",
+                "https://backend-pbn5.onrender.com/api/admin/bets",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ function Bets() {
         try {
             const token = localStorage.getItem("token");
             await axios.put(
-                `https://only-backend-je4j.onrender.com/api/admin/bets/${updatedBet._id}`,
+                `https://backend-pbn5.onrender.com/api/admin/bets/${updatedBet._id}`,
                 updatedBet,
                 {
                     headers: {
@@ -77,7 +77,7 @@ function Bets() {
         try {
             const token = localStorage.getItem("token");
             await axios.delete(
-                `https://only-backend-je4j.onrender.com/api/admin/bets/${betId}`,
+                `https://backend-pbn5.onrender.com/api/admin/bets/${betId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

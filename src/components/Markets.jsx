@@ -19,7 +19,7 @@ function Markets() {
         try {
             const token = localStorage.getItem('token');
             console.log(token);
-            const response = await axios.get('https://only-backend-je4j.onrender.com/api/markets', {
+            const response = await axios.get('https://backend-pbn5.onrender.com/api/markets', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -58,7 +58,7 @@ function Markets() {
     
             console.log("Updating market:", marketToUpdate);
             await axios.put(
-                `https://only-backend-je4j.onrender.com/api/admin/markets/${marketId}`,
+                `https://backend-pbn5.onrender.com/api/admin/markets/${marketId}`,
                 {
                     isBettingOpen: !currentState // ✅ Only send isBettingOpen (openBetting updates automatically)
                 },
@@ -89,7 +89,7 @@ function Markets() {
         try {
             const token = localStorage.getItem('token');
             await axios.post(
-                'https://only-backend-je4j.onrender.com/api/admin/add-market',
+                'https://backend-pbn5.onrender.com/api/admin/add-market',
                 newMarket,
                 {
                     headers: {
@@ -112,7 +112,7 @@ function Markets() {
         try {
             const token = localStorage.getItem('token');
             await axios.delete(
-                `https://only-backend-je4j.onrender.com/api/admin/markets/${marketId}`,
+                `https://backend-pbn5.onrender.com/api/admin/markets/${marketId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

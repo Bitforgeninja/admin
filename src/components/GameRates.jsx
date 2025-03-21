@@ -9,7 +9,7 @@ function GameRates() {
         const fetchRates = async () => {
             console.log(localStorage.getItem('token'));
             try {
-                const response = await axios.get('https://only-backend-je4j.onrender.com/api/admin/winning-ratios', {
+                const response = await axios.get('https://backend-pbn5.onrender.com/api/admin/winning-ratios', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -39,7 +39,7 @@ function GameRates() {
     const updateRate = async (id, ratio) => {
         setUpdating(true); // Start updating
         try {
-            await axios.put(`https://only-backend-je4j.onrender.com/api/admin/winning-ratios/${id}`, { ratio }, {
+            await axios.put(`https://backend-pbn5.onrender.com/api/admin/winning-ratios/${id}`, { ratio }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

@@ -12,7 +12,7 @@ const Admins = () => {
 
     const fetchAdmins = async () => {
         try {
-            const response = await axios.get('https://only-backend-je4j.onrender.com/api/admin/admins');
+            const response = await axios.get('https://backend-pbn5.onrender.com/api/admin/admins');
 
             setAdmins(response.data.admins); // Assuming the response has an `admins` array
         } catch (err) {

@@ -21,10 +21,10 @@ function BetModal({ bet, onClose, onSave, onDelete }) {
                 winningRatio: bet.winningRatio,
                 status: bet.status, // Include status field
             });
-            console.log("API URL:", `https://only-backend-je4j.onrender.com/api/admin/bets/${bet._id}`);
+            console.log("API URL:", `https://backend-pbn5.onrender.com/api/admin/bets/${bet._id}`);
     
             const response = await axios.put(
-                `https://only-backend-je4j.onrender.com/api/admin/bets/${bet._id}`,
+                `https://backend-pbn5.onrender.com/api/admin/bets/${bet._id}`,
                 {
                     marketName: bet.marketName,
                     gameName: bet.gameName,
@@ -60,7 +60,7 @@ function BetModal({ bet, onClose, onSave, onDelete }) {
         try {
             const token = localStorage.getItem("token");
             await axios.delete(
-                `https://only-backend-je4j.onrender.com/api/admin/bets/${bet._id}`,
+                `https://backend-pbn5.onrender.com/api/admin/bets/${bet._id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

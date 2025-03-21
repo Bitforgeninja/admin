@@ -16,7 +16,7 @@ function AddFunds() {
             }
             try {
                 const response = await axios.get(
-                    "https://only-backend-je4j.onrender.com/api/admin/transactions",
+                    "https://backend-pbn5.onrender.com/api/admin/transactions",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ function AddFunds() {
         const token = localStorage.getItem("token");
         try {
             await axios.post(
-                "https://only-backend-je4j.onrender.com/api/wallet/verify",
+                "https://backend-pbn5.onrender.com/api/wallet/verify",
                 { transactionId: transaction.transactionId, status },
                 {
                     headers: {

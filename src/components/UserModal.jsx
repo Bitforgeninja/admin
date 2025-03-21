@@ -34,7 +34,7 @@ function UserModal({ user, onClose, onSave, onDelete, isNewUser }) {
     
                 // Create New User
                 const response = await axios.post(
-                    "https://only-backend-je4j.onrender.com/api/admin/users/add",
+                    "https://backend-pbn5.onrender.com/api/admin/users/add",
                     {
                         name: editedUser.name,
                         email: editedUser.email,
@@ -61,7 +61,7 @@ function UserModal({ user, onClose, onSave, onDelete, isNewUser }) {
                 if (editedUser.walletBalance !== undefined) updateData.walletBalance = editedUser.walletBalance;
     
                 await axios.put(
-                    `https://only-backend-je4j.onrender.com/api/admin/users/${user._id}`,
+                    `https://backend-pbn5.onrender.com/api/admin/users/${user._id}`,
                     updateData,
                     {
                         headers: {
@@ -93,7 +93,7 @@ function UserModal({ user, onClose, onSave, onDelete, isNewUser }) {
         try {
             const token = localStorage.getItem("token");
             await axios.delete(
-                `https://only-backend-je4j.onrender.com/api/admin/users/${user._id}`,
+                `https://backend-pbn5.onrender.com/api/admin/users/${user._id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

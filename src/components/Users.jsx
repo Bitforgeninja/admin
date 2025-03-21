@@ -16,7 +16,7 @@ function Users() {
     try {
       const token = localStorage.getItem("token");
       const { data } = await axios.get(
-        "https://only-backend-je4j.onrender.com/api/admin/users",
+        "https://backend-pbn5.onrender.com/api/admin/users",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -45,7 +45,7 @@ function Users() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://only-backend-je4j.onrender.com/api/admin/users/add",
+        "https://backend-pbn5.onrender.com/api/admin/users/add",
         user,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -67,7 +67,7 @@ function Users() {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://only-backend-je4j.onrender.com/api/admin/users/${userId}`,
+        `https://backend-pbn5.onrender.com/api/admin/users/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

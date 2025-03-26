@@ -1,6 +1,7 @@
+// ✅ Updated ActiveMarketsTable with Edit Button
 import React from 'react';
 
-function ActiveMarketsTable({ marketsData, handleToggleBetting, handleDeleteMarket }) {
+function ActiveMarketsTable({ marketsData, handleToggleBetting, handleDeleteMarket, handleEditMarket }) {
     return (
         <div>
             <table className="min-w-full bg-white divide-y divide-gray-200 shadow-sm mb-6">
@@ -45,8 +46,16 @@ function ActiveMarketsTable({ marketsData, handleToggleBetting, handleDeleteMark
                             </td>
                             <td className="px-4 py-3 text-right space-x-2">
                                 <button
+                                    onClick={() => handleEditMarket(market)}
+                                    className="text-blue-500 hover:text-blue-700 text-base p-1"
+                                    title="Edit"
+                                >
+                                    <i className="fas fa-edit"></i>
+                                </button>
+                                <button
                                     onClick={() => handleDeleteMarket(market.marketId)}
                                     className="text-red-500 hover:text-red-700 text-base p-1"
+                                    title="Delete"
                                 >
                                     <i className="fas fa-trash-alt"></i>
                                 </button>

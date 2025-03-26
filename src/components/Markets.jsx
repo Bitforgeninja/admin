@@ -1,3 +1,4 @@
+// ✅ Updated Markets.jsx with Edit Support
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MarketFormModal from './MarketFormModal';
@@ -7,6 +8,7 @@ import './ToggleSwitch.css';
 function Markets() {
     const [marketsData, setMarketsData] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [editingMarket, setEditingMarket] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingAdd, setLoadingAdd] = useState(false);
     const [error, setError] = useState("");
@@ -18,11 +20,8 @@ function Markets() {
     const fetchMarkets = async () => {
         try {
             const token = localStorage.getItem('token');
-            console.log(token);
             const response = await axios.get('https://backend-pbn5.onrender.com/api/markets', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
             setMarketsData(
                 response.data.map((market) => ({
@@ -46,22 +45,11 @@ function Markets() {
     };
 
     const handleToggleSwitch = async (marketId, currentState) => {
-        console.log("Toggle request for market ID:", marketId);
         try {
             const token = localStorage.getItem('token');
-            const marketToUpdate = marketsData.find((market) => market.marketId === marketId);
-            if (!marketToUpdate) {
-                console.error("Market with ID not found:", marketId);
-                setError("Market not found.");
-                return;
-            }
-    
-            console.log("Updating market:", marketToUpdate);
             await axios.put(
                 `https://backend-pbn5.onrender.com/api/admin/markets/${marketId}`,
-                {
-                    isBettingOpen: !currentState // ✅ Only send isBettingOpen (openBetting updates automatically)
-                },
+                { isBettingOpen: !currentState },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -69,8 +57,7 @@ function Markets() {
                     },
                 }
             );
-    
-            // ✅ Update state immediately to reflect changes
+
             setMarketsData((prevMarkets) =>
                 prevMarkets.map((market) =>
                     market.marketId === marketId
@@ -79,7 +66,6 @@ function Markets() {
                 )
             );
         } catch (error) {
-            console.error("Failed to toggle market:", error);
             setError("Failed to toggle market: " + (error.response?.data?.message || error.message));
         }
     };
@@ -98,10 +84,55 @@ function Markets() {
                     },
                 }
             );
-            fetchMarkets(); // Refresh markets list after a new addition
+            fetchMarkets();
             setShowModal(false);
         } catch (error) {
             setError('Failed to add market: ' + error.message);
+        }
+        setLoadingAdd(false);
+    };
+
+    const handleEditMarket = (market) => {
+        setEditingMarket(market);
+        setShowModal(true);
+    };
+
+    const handleSaveMarket = async (market) => {
+        setLoadingAdd(true);
+        try {
+            const token = localStorage.getItem('token');
+            if (editingMarket) {
+                await axios.put(
+                    `https://backend-pbn5.onrender.com/api/markets/edit/${editingMarket.marketId}`,
+                    {
+                        ...market,
+                        openBetting: market.isBettingOpen
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            } else {
+                await axios.post(
+                    'https://backend-pbn5.onrender.com/api/admin/add-market',
+                    market,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            }
+
+            fetchMarkets();
+            setShowModal(false);
+            setEditingMarket(null);
+        } catch (error) {
+            setError('Failed to save market: ' + error.message);
         }
         setLoadingAdd(false);
     };
@@ -114,14 +145,12 @@ function Markets() {
             await axios.delete(
                 `https://backend-pbn5.onrender.com/api/admin/markets/${marketId}`,
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
 
             setMarketsData((prevMarkets) =>
-                prevMarkets.filter((market) => market.id !== marketId)
+                prevMarkets.filter((market) => market.marketId !== marketId)
             );
 
             alert("Market deleted successfully.");
@@ -134,21 +163,19 @@ function Markets() {
     if (error) return <p>Error loading markets: {error}</p>;
 
     return (
-        <div
-            className="p-8 bg-white rounded-lg shadow relative overflow-hidden"
-            style={{ height: 'calc(100vh - 4rem)' }}
-        >
+        <div className="p-8 bg-white rounded-lg shadow relative overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
             <div className="space-y-8">
                 <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-semibold text-gray-800">Markets</h2>
                     <button
-                        onClick={() => setShowModal(true)}
-                        className={`bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded shadow ${
-                            loadingAdd ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
+                        onClick={() => {
+                            setEditingMarket(null);
+                            setShowModal(true);
+                        }}
+                        className={`bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded shadow ${loadingAdd ? 'opacity-50 cursor-not-allowed' : ''}`}
                         disabled={loadingAdd}
                     >
-                        {loadingAdd ? 'Adding...' : 'Add Market'}
+                        {loadingAdd ? 'Saving...' : 'Add Market'}
                     </button>
                 </div>
                 <div style={{ maxHeight: 'calc(100vh - 10rem)', overflowY: 'auto' }}>
@@ -156,14 +183,19 @@ function Markets() {
                         marketsData={marketsData}
                         handleToggleBetting={handleToggleSwitch}
                         handleDeleteMarket={handleDeleteMarket}
+                        handleEditMarket={handleEditMarket}
                     />
                 </div>
             </div>
 
             {showModal && (
                 <MarketFormModal
-                    onClose={() => setShowModal(false)}
-                    onSave={handleAddMarket}
+                    onClose={() => {
+                        setShowModal(false);
+                        setEditingMarket(null);
+                    }}
+                    onSave={handleSaveMarket}
+                    existingMarket={editingMarket}
                 />
             )}
         </div>

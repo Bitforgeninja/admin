@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+// ✅ Updated MarketFormModal with Edit Support
+import React, { useState, useEffect } from 'react';
 
-function MarketFormModal({ onClose, onSave }) {
+function MarketFormModal({ onClose, onSave, existingMarket }) {
     const [market, setMarket] = useState({
         name: '',
         openTime: '',
         closeTime: '',
-        isBettingOpen: false
+        isBettingOpen: false,
     });
+
+    useEffect(() => {
+        if (existingMarket) {
+            setMarket({
+                name: existingMarket.name || '',
+                openTime: reverseFormatTime(existingMarket.openTime || ''),
+                closeTime: reverseFormatTime(existingMarket.closeTime || ''),
+                isBettingOpen: existingMarket.isBettingOpen || false,
+            });
+        }
+    }, [existingMarket]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -18,32 +30,47 @@ function MarketFormModal({ onClose, onSave }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Generate a random Market ID
-        const marketId = `MKT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-        // Prepare the payload, potentially convert time to preferred format here if necessary
         const payload = {
             ...market,
-            marketId,
             openTime: formatTime(market.openTime),
-            closeTime: formatTime(market.closeTime)
+            closeTime: formatTime(market.closeTime),
         };
+
+        // If editing, keep the existing marketId
+        if (existingMarket?.marketId) {
+            payload.marketId = existingMarket.marketId;
+        } else {
+            payload.marketId = `MKT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+        }
+
         onSave(payload);
-        onClose(); // Close modal after saving
+        onClose();
     };
 
-    // Function to format the time input to 'h:mm A' format
     const formatTime = (timeString) => {
-        const [hour, minute] = timeString.split(':');
+        const [hour, minute] = timeString.split(":");
         const hourInt = parseInt(hour);
         const period = hourInt >= 12 ? 'PM' : 'AM';
-        const formattedHour = ((hourInt + 11) % 12 + 1); // Convert 24h to 12h format
+        const formattedHour = ((hourInt + 11) % 12 + 1);
         return `${formattedHour}:${minute} ${period}`;
+    };
+
+    const reverseFormatTime = (formattedTime) => {
+        if (!formattedTime.includes(':') || formattedTime.length < 5) return '';
+        const [time, period] = formattedTime.split(' ');
+        let [hour, minute] = time.split(":");
+        hour = parseInt(hour);
+        if (period === 'PM' && hour !== 12) hour += 12;
+        if (period === 'AM' && hour === 12) hour = 0;
+        return `${hour.toString().padStart(2, '0')}:${minute}`;
     };
 
     return (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center px-4 py-6">
             <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                <h2 className="text-lg font-semibold text-gray-700 mb-4">Add New Market</h2>
+                <h2 className="text-lg font-semibold text-gray-700 mb-4">
+                    {existingMarket ? 'Edit Market' : 'Add New Market'}
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-3 text-sm">
                     <div>
                         <label className="block text-sm font-medium text-gray-600">Market Name:</label>
@@ -63,7 +90,9 @@ function MarketFormModal({ onClose, onSave }) {
                     </div>
                     <div className="flex justify-end space-x-3 mt-4">
                         <button type="button" onClick={onClose} className="bg-gray-400 text-white px-4 py-1 rounded hover:bg-gray-500">Cancel</button>
-                        <button type="submit" className="bg-blue-400 text-white px-4 py-1 rounded hover:bg-blue-500">Save</button>
+                        <button type="submit" className="bg-blue-400 text-white px-4 py-1 rounded hover:bg-blue-500">
+                            {existingMarket ? 'Update' : 'Save'}
+                        </button>
                     </div>
                 </form>
             </div>

@@ -1,3 +1,4 @@
+// ✅ Updated Games Admin Page with Date Picker
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -6,6 +7,7 @@ const Games = () => {
   const [selectedMarketId, setSelectedMarketId] = useState('');
   const [inputOne, setInputOne] = useState('');
   const [inputTwo, setInputTwo] = useState('');
+  const [resultDate, setResultDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -38,17 +40,21 @@ const Games = () => {
     setInputTwo(event.target.value);
   };
 
+  const handleDateChange = (event) => {
+    setResultDate(event.target.value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const token = localStorage.getItem('token');
-
       const response = await axios.post(
         'https://backend-pbn5.onrender.com/api/admin/markets/declare-results',
         {
           marketId: selectedMarket.marketId,
           openResult: inputOne,
           closeResult: inputTwo,
+          date: resultDate,
         },
         {
           headers: {
@@ -58,11 +64,10 @@ const Games = () => {
       );
 
       console.log('Submit success:', response.data);
-      window.alert('✅ Game results updated successfully!'); // Success alert
-      
+      window.alert('✅ Game results updated successfully!');
     } catch (err) {
       console.error('Error submitting:', err);
-      window.alert('❌ Failed to update game results. Please try again!'); // Error alert
+      window.alert('❌ Failed to update game results. Please try again!');
     }
   };
 
@@ -93,7 +98,7 @@ const Games = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="mb-4">
-        <div className="flex space-x-4 items-center">
+        <div className="flex flex-wrap gap-4 items-end">
           <div>
             <label htmlFor="inputOne" className="block text-gray-700 text-sm font-bold mb-2">
               Input One:
@@ -118,6 +123,18 @@ const Games = () => {
               onChange={handleInputTwoChange}
               className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Enter second value"
+            />
+          </div>
+          <div>
+            <label htmlFor="datePicker" className="block text-gray-700 text-sm font-bold mb-2">
+              Result Date:
+            </label>
+            <input
+              id="datePicker"
+              type="date"
+              value={resultDate}
+              onChange={handleDateChange}
+              className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
           <button

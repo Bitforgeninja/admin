@@ -9,7 +9,8 @@ function PlatformSettings() {
         adminPhone: '',
         adminAddress: '',
         qrCodeUrl: '',
-        bannerImageUrl: ''
+        bannerImageUrl: '',
+        whatsAppNumber: ''  // New field for managing WhatsApp number
     });
     const [qrImage, setQrImage] = useState(null);
     const [bannerImage, setBannerImage] = useState(null);
@@ -22,21 +23,22 @@ function PlatformSettings() {
                         Authorization: 'Bearer ' + localStorage.getItem('token') // Assuming the token is stored in localStorage
                     }
                 });
-                const { adminContact, upiId, bannerImageUrl, qrCodeUrl } = response.data;
+                const { adminContact, upiId, bannerImageUrl, qrCodeUrl, whatsAppNumber } = response.data;
                 setSettings({
                     upiId: upiId || '',
-                    adminName: adminContact.name || '',
-                    adminEmail: adminContact.email || '',
-                    adminPhone: adminContact.phone || '',
-                    adminAddress: adminContact.address || '',
+                    adminName: adminContact?.name || '',
+                    adminEmail: adminContact?.email || '',
+                    adminPhone: adminContact?.phone || '',
+                    adminAddress: adminContact?.address || '',
                     qrCodeUrl: qrCodeUrl || '',
-                    bannerImageUrl: bannerImageUrl || ''
+                    bannerImageUrl: bannerImageUrl || '',
+                    whatsAppNumber: whatsAppNumber || '' // Ensure this field is actually being returned by the backend
                 });
             } catch (error) {
                 console.error('Error fetching settings', error);
             }
         };
-
+    
         fetchSettings();
     }, []);
 
@@ -65,6 +67,7 @@ function PlatformSettings() {
         formData.append('adminContact[email]', settings.adminEmail);
         formData.append('adminContact[phone]', settings.adminPhone);
         formData.append('adminContact[address]', settings.adminAddress);
+        formData.append('whatsAppNumber', settings.whatsAppNumber); // Append WhatsApp number to the formData
         if (qrImage) formData.append('qrCode', qrImage);
         if (bannerImage) formData.append('bannerImage', bannerImage);
 
@@ -89,11 +92,12 @@ function PlatformSettings() {
                 <div>
                     <h3 className="text-md font-bold mb-2">Current Settings</h3>
                     <ul>
-                        <li><strong>UPI ID:</strong> {settings.upiId}</li>
+                    <li><strong>UPI ID:</strong> {settings.upiId}</li>
                         <li><strong>Admin Name:</strong> {settings.adminName}</li>
                         <li><strong>Admin Email:</strong> {settings.adminEmail}</li>
                         <li><strong>Admin Phone:</strong> {settings.adminPhone}</li>
                         <li><strong>Admin Address:</strong> {settings.adminAddress}</li>
+                        <li><strong>WhatsApp Number:</strong> {settings.whatsAppNumber}</li>
                         <li><strong>QR Code:</strong> <img src={settings.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} /></li>
                         <li><strong>Banner Image:</strong> <img src={settings.bannerImageUrl} alt="Banner" style={{ width: '300px', height: '100px' }} /></li>
                     </ul>
@@ -123,11 +127,15 @@ function PlatformSettings() {
                         </div>
                         <div className="mb-4">
                             <label htmlFor="qrCode" className="block mb-2">Upload New QR Code:</label>
-                            <input type="file" id="qrCode" onChange={(e) => handleImageChange(e, 'qrCode')} className="p-2 border rounded" />
+                            <input type="file" id="qrCode" onChange={(e) => handleImageChange(e, 'qrCode')} className="p-2 border rounded"></input>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="bannerImage" className="block mb-2">Upload New Banner Image:</label>
                             <input type="file" id="bannerImage" onChange={(e) => handleImageChange(e, 'banner')} className="p-2 border rounded" />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="whatsAppNumber" className="block mb-2">WhatsApp Number:</label>
+                            <input type="text" id="whatsAppNumber" name="whatsAppNumber" value={settings.whatsAppNumber} onChange={handleChange} className="p-2 border rounded" />
                         </div>
                         <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Save Changes
